@@ -1,0 +1,55 @@
+#debug: true
+# tomcat配置
+server:
+  port: 8088
+  tomcat:
+    uri-encoding: UTF-8
+  jetty:
+    max-http-post-size: 80KB
+
+multipart:
+  maxFileSize=2000MB:
+
+
+# 数据源配置信息
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://193.112.156.115:3306/oracle_homework?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: zhao0423
+    hikari:
+      connection-timeout: 30000          # 等待连接池分配连接的最大时长(毫秒) ，超过这个时长还没可用的连接则发生SQLException, 默认30秒
+      minimum-idle: 5                    # 最少连接数 dev:10
+      maximum-pool-size: 20              # 最大连接数
+      auto-commit: true                  # 自动提交
+      idle-timeout: 600000               # 连接超时的最大时长(毫秒) ， 超时则被释放(retired) , 默认10分钟
+      pool-name: DateSourceHikariCP      # 连接池名字
+      max-lifetime: 1800000              # 连接生命时长(毫秒) ，超时而且没被使用的则被释放，默认30分钟
+      connection-test-query: SELECT 1    # 连接测试语句
+  mail:
+    username: 597701764@qq.com
+    password: caecqsosimuhbfeb
+    host: smtp.qq.com
+
+# mybatis配置 会在所有子工程下java和resource找com.immoc.pojo和mapper/*.xml
+mybatis:
+  type-aliases-package: cn.rxwycdh.oraclehomework.entity
+  mapper-locations:
+    - classpath:cn/rxwycdh/oraclehomework/mappers/*.xml
+
+logging:
+  level:
+    cn:
+      gdpu:
+        newretail:
+          mapper: debug
+
+# 对象存储配置
+minio:
+  appKey: GOpZUCHAhrqdDi9v
+  secretKey: 8DtnMpsYHiugIf9IDCTh2lLxI5Ktc4i7Rd7YTtu2TRdWnaQR2R
+  url: http://193.112.251.164:9000
+  bucketName: oracle
+

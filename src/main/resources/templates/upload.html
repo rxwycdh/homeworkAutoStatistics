@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8" />
+<head>
+    <title>文件上传</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.css"
+          rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+</head>
+<body class="container">
+<br />
+<span id="time"></span>
+<div class="row">
+    <input class="btn btn-info btn-xs" type="file" name="file" /><br />
+</div>
+</div>
+
+<label id = "message"></label><br />
+<div class="row">
+    <input class="btn btn-success btn-xs" type="button" name="upload" value="上传" />
+</div>
+</body>
+<script type="text/javascript">
+    var fileBtn = $("input[name=file]");
+    var processBar= $("#progressBar");
+    var uploadBtn=$("input[name=upload]");
+    var canelBtn=$("input[name=cancelUpload]");
+    var ot;
+    var oloaded;
+    fileBtn.change(function() {
+        var fileObj = fileBtn.get(0).files[0];
+    });
+    uploadBtn.click(function(){
+        $(this).attr('disabled', true);
+        uploadFile();
+    });
+    function uploadFile(){
+        var url ="/upload";
+        var fileObj = fileBtn.get(0).files[0];
+        if(fileObj==null){
+            alert("请选择文件");
+            return;
+        }
+        var form = new FormData();
+        form.append('file', fileObj);
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('post', url, true);
+        xhr.onloadstart = function() {
+            console.log('开始上传');
+            ot = new Date().getTime();
+            oloaded = 0;
+        };
+
+        xhr.upload.addEventListener('progress', progressFunction, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.send(form);
+
+        function progressFunction(evt) {
+            debugger;
+            document.getElementById("message").innerText = "正在上传中";
+        }
+
+
+        function uploadComplete(evt) {
+            console.log(evt);
+            console.log(xhr.status);
+            var result=JSON.parse(xhr.responseText);
+            document.getElementById("message").innerText = result.data;
+            uploadBtn.attr('disabled', false);
+            console.log('上传完成');
+        }
+
+
+        function uploadFailed(evt) {
+            console.log('上传失败' + evt.target.responseText);
+            document.getElementById("fail").style.display="block";
+        }
+
+
+        function cancelUpload() {
+            xhr.abort();
+        }
+
+        function uploadCanceled(evt) {
+            console.log('上传取消,上传被用户取消或者浏览器断开连接:' + evt.target.responseText);
+        }
+
+        canelBtn.click(function(){
+            uploadBtn.attr('disabled', false);
+            cancelUpload();
+        })
+    }
+</script>
+</html>
